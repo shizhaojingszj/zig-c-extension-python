@@ -73,10 +73,11 @@ fn mapAList(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     for (0..@intCast(n)) |i| {
         // const size_of_pResultList = py.PyList_Size(pResultList);
         // std.debug.print("size_of_pResultList: {}\n", .{size_of_pResultList});
-        const i_: py.Py_ssize_t = py.PyLong_AsSsize_t(py.PyLong_FromSize_t((i)));
+        const temp = py.PyLong_FromSize_t((i));
+        const i_: py.Py_ssize_t = py.PyLong_AsSsize_t(temp);
         pItem = py.PyList_GetItem(pList, i_);
         // std.debug.print("pItem: {}\n; i: {}; n: {}\n", .{ pItem.*, i_, n });
-        defer py.Py_DecRef(pItem);
+        // defer py.Py_DecRef(pItem);
         if (py.PyLong_Check(pItem) == 0) {
             py.PyErr_SetString(py.PyExc_TypeError, "list items must be integers.");
             return Py_BuildValue("");
