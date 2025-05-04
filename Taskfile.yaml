@@ -1,0 +1,10 @@
+version: '3'
+
+
+tasks:
+  build-debug:
+    cmds:
+      - |-
+        python setup.py build_ext --debug install
+      - |-
+        python -m timeit 'import simple; simple.mapAList([1,2,3])'
