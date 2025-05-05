@@ -15,10 +15,8 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
-    const options = b.addOptions();
-
     // python option
-    const python_option = options.addOption(
+    const python_option = b.option(
         []const u8,
         "python_include",
         "python include dir",
@@ -89,6 +87,27 @@ pub fn build(b: *std.Build) void {
         .root_module = exe_mod,
     });
 
+    // Examples
+    const examples_step = b.step("example", "Run examples");
+
+    inline for (EXAMPLE_NAMES) |EXAMPLE_NAME| {
+        const example = b.addExecutable(.{
+            .name = EXAMPLE_NAME,
+            .root_source_file = std.Build.LazyPath{
+                .cwd_relative = EXAMPLES_DIR ++ "/" ++ EXAMPLE_NAME ++ ".zig",
+            },
+            .target = target,
+            .optimize = optimize,
+        });
+
+        example.root_module.addImport("_my_lib", lib_mod);
+
+        const example_run = b.addRunArtifact(example);
+        examples_step.dependOn(&example_run.step);
+    }
+
+    b.default_step.dependOn(examples_step);
+
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
     // step when running `zig build`).
@@ -138,3 +157,9 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_lib_unit_tests.step);
     test_step.dependOn(&run_exe_unit_tests.step);
 }
+
+const EXAMPLES_DIR = "examples/";
+
+const EXAMPLE_NAMES = &.{
+    "abc",
+};

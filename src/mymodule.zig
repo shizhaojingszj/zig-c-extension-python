@@ -105,7 +105,7 @@ var Methods = [_]PyMethodDef{
         .ml_name = "sum",
         .ml_meth = sum,
         .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
+        .ml_doc = "add two numbers",
     },
     PyMethodDef{
         .ml_name = "mul",
@@ -146,23 +146,23 @@ var Methods = [_]PyMethodDef{
 };
 
 var module = PyModuleDef{
-    .m_base = PyModuleDef_Base{
-        .ob_base = PyObject{
-            .ob_refcnt = 1,
-            .ob_type = null,
-        },
-        .m_init = null,
-        .m_index = 0,
-        .m_copy = null,
-    },
+    // .m_base = PyModuleDef_Base{
+    //     .ob_base = PyObject{
+    //         .ob_refcnt = 1,
+    //         .ob_type = null,
+    //     },
+    //     .m_init = null,
+    //     .m_index = 0,
+    //     .m_copy = null,
+    // },
     .m_name = "simple",
     .m_doc = null,
     .m_size = -1,
     .m_methods = &Methods,
-    .m_slots = null,
-    .m_traverse = null,
-    .m_clear = null,
-    .m_free = null,
+    // .m_slots = null,
+    // .m_traverse = null,
+    // .m_clear = null,
+    // .m_free = null,
 };
 
 pub export fn PyInit_simple() [*]PyObject {
